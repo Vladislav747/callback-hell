@@ -33,28 +33,28 @@
 
                           fs.readdir(source, function (err, files) {
                             if (err) {
-                              console.log('Error finding files: ' + err)
+                              console.log('Error finding files: ' + err);
                             } else {
                               files.forEach(function (filename, fileIndex) {
-                                console.log(filename)
+                                console.log(filename);
                                 gm(source + filename).size(function (err, values) {
                                   if (err) {
-                                    console.log('Error identifying file size: ' + err)
+                                    console.log('Error identifying file size: ' + err);
                                   } else {
-                                    console.log(filename + ' : ' + values)
-                                    aspect = (values.width / values.height)
+                                    console.log(filename + ' : ' + values);
+                                    aspect = (values.width / values.height);
                                     widths.forEach(function (width, widthIndex) {
-                                      height = Math.round(width / aspect)
-                                      console.log('resizing ' + filename + 'to ' + height + 'x' + height)
+                                      height = Math.round(width / aspect);
+                                      console.log('resizing ' + filename + 'to ' + height + 'x' + height);
                                       this.resize(width, height).write(dest + 'w' + width + '_' + filename, function(err) {
-                                        if (err) console.log('Error writing file: ' + err)
-                                      })
-                                    }.bind(this))
+                                        if (err) console.log('Error writing file: ' + err);
+                                      });
+                                    }.bind(this));
                                   }
-                                })
-                              })
+                                });
+                              });
                             }
-                          })
+                          });
 
                       Видите форму пирамиды и все эти `})` в конце? Фу! Это ласково называют **адом обратных вызовов** (callback hell).
 
@@ -66,27 +66,27 @@
 
                       Когда вы вызываете обычную функцию, вы можете использовать её возвращаемое значение:
 
-                          var result = multiplyTwoNumbers(5, 10)
-                          console.log(result)
+                          var result = multiplyTwoNumbers(5, 10);
+                          console.log(result);
                           // выведется 50
 
                       Однако асинхронные функции, которые используют обратные вызовы, ничего сразу же не возвращают.
 
-                          var photo = downloadPhoto('http://coolcats.com/cat.gif')
+                          var photo = downloadPhoto('http://coolcats.com/cat.gif');
                           // photo равно 'undefined'!
 
                       В этом случае скачивание файла займёт очень много времени, и никто не хочет, чтобы программа была приостановлена (то есть заблокирована), пока идёт загрузка.
 
                       Вместо этого вы сохраняете в функцию код, который должен выполняться после завершения загрузки. **Это и есть обратный вызов!** Адрес изображения передаётся функции `downloadPhoto`, и она запускает наш обратный вызов `handlePhoto`, уже после скачивания.
 
-                          downloadPhoto('http://coolcats.com/cat.gif', handlePhoto)
+                          downloadPhoto('http://coolcats.com/cat.gif', handlePhoto);
 
                           function handlePhoto (error, photo) {
-                            if (error) console.error('Ошибка загрузки!', error)
-                            else console.log('Загрузка завершена', photo)
+                            if (error) console.error('Ошибка загрузки!', error);
+                            else console.log('Загрузка завершена', photo);
                           }
 
-                          console.log('Загрузка начата')
+                          console.log('Загрузка начата');
 
                       Самая большая проблема при попытке понять функции обратного вызова — это отсутствие знаний в каком порядке исполняются функции во время работы программы. В нашем примере произошло три крупных события. Сначала объявлена функция `handlePhoto`, потом запущена функция `downloadPhoto`, и ей передана `handlePhoto` в качестве функции обратного вызова. Наконец, было показано сообщение `'Загрузка начата'` на экран.
 
@@ -107,34 +107,34 @@
 
                       Вот пример неряшливого кода, который использует [browser-request](https://github.com/iriscouch/browser-request), чтобы создать AJAX-запрос на сервер:
 
-                          var form = document.querySelector('form')
+                          var form = document.querySelector('form');
                           form.onsubmit = function (submitEvent) {
-                            var name = document.querySelector('input').value
+                            var name = document.querySelector('input').value;
                             request({
                               uri: 'http://example.com/upload',
                               body: name,
                               method: 'POST'
                             }, function (err, response, body) {
-                              var statusMessage = document.querySelector('.status')
-                              if (err) return statusMessage.value = err
-                              statusMessage.value = body
-                            })
+                              var statusMessage = document.querySelector('.status');
+                              if (err) return statusMessage.value = err;
+                              statusMessage.value = body;
+                            });
                           }
 
                       Этот код имеет две анонимные функции. Давайте дадим им имена.
 
-                          var form = document.querySelector('form')
+                          var form = document.querySelector('form');
                           form.onsubmit = function formSubmit (submitEvent) {
-                            var name = document.querySelector('input').value
+                            var name = document.querySelector('input').value;
                             request({
                               uri: 'http://example.com/upload',
                               body: name,
                               method: 'POST'
                             }, function postResponse (err, response, body) {
-                              var statusMessage = document.querySelector('.status')
-                              if (err) return statusMessage.value = err
-                              statusMessage.value = body
-                            })
+                              var statusMessage = document.querySelector('.status');
+                              if (err) return statusMessage.value = err;
+                              statusMessage.value = body;
+                            });
                           }
 
                       Как видите, давать имена функциям легко, и это имеет неоспоримые преимущества:
@@ -145,21 +145,21 @@
 
                       Теперь вы можете переместить функцию на верхний уровень программы:
 
-                          document.querySelector('form').onsubmit = formSubmit
+                          document.querySelector('form').onsubmit = formSubmit;
 
                           function formSubmit (submitEvent) {
-                            var name = document.querySelector('input').value
+                            var name = document.querySelector('input').value;
                             request({
                               uri: 'http://example.com/upload',
                               body: name,
                               method: 'POST'
-                            }, postResponse)
+                            }, postResponse);
                           }
 
                           function postResponse (err, response, body) {
-                            var statusMessage = document.querySelector('.status')
-                            if (err) return statusMessage.value = err
-                            statusMessage.value = body
+                            var statusMessage = document.querySelector('.status');
+                            if (err) return statusMessage.value = err;
+                            statusMessage.value = body;
                           }
 
                       Обратите внимание, что объявление функций здесь было осуществлено в самом низу файла. Это произошло благодаря [поднятию функций](https://gist.github.com/maxogden/4bed247d9852de93c94c) (function hoisting).
@@ -172,29 +172,29 @@
 
                       Назовём наш новый файл `formuploader.js`, он содержит в себе две функции:
 
-                          module.exports.submit = formSubmit
+                          module.exports.submit = formSubmit;
 
                           function formSubmit (submitEvent) {
-                            var name = document.querySelector('input').value
+                            var name = document.querySelector('input').value;
                             request({
                               uri: 'http://example.com/upload',
                               body: name,
                               method: 'POST'
-                            }, postResponse)
+                            }, postResponse);
                           }
 
                           function postResponse (err, response, body) {
-                            var statusMessage = document.querySelector('.status')
-                            if (err) return statusMessage.value = err
-                            statusMessage.value = body
+                            var statusMessage = document.querySelector('.status');
+                            if (err) return statusMessage.value = err;
+                            statusMessage.value = body;
                           }
 
                       `module.exports` — это небольшой пример модуля, который работает в Node.js, Electron и в браузере через [browserify](https://github.com/substack/node-browserify). Мне очень нравится этот стиль для модулей, так как он работает везде, очень лёгок в понимании и не требует сложных конфигурационных файлов и скриптов.
 
                       Теперь, когда у нас есть `formuploader.js` (он будет загружен на страницу в тег script после работы browserify), нам просто нужно вызвать и использовать его:
 
-                          var formUploader = require('formuploader')
-                          document.querySelector('form').onsubmit = formUploader.submit
+                          var formUploader = require('formuploader');
+                          document.querySelector('form').onsubmit = formUploader.submit;
 
                       В результате наше приложение имеет только две строки кода и обладает следующими преимуществами:
 
@@ -209,12 +209,12 @@
 
                       У обратных вызовов самым популярным соглашением обработки ошибок является стиль Node.js, где первый параметр всегда резервируется для ошибок.
 
-                           var fs = require('fs')
+                           var fs = require('fs');
 
-                           fs.readFile('/Не/сущес/твует', handleFile)
+                           fs.readFile('/Не/сущес/твует', handleFile);
 
                            function handleFile (error, file) {
-                             if (error) return console.error('Ой, случилась ошибка', error)
+                             if (error) return console.error('Ой, случилась ошибка', error);
                              // в противном случае, продолжай и используй `file` в своём коде
                            }
 

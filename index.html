@@ -42,12 +42,14 @@
                                     console.log('Error identifying file size: ' + err);
                                   } else {
                                     console.log(filename + ' : ' + values);
-                                    aspect = (values.width / values.height);
+                                    var aspect = (values.width / values.height);
                                     widths.forEach(function (width, widthIndex) {
-                                      height = Math.round(width / aspect);
+                                      var height = Math.round(width / aspect);
                                       console.log('resizing ' + filename + 'to ' + height + 'x' + height);
-                                      this.resize(width, height).write(dest + 'w' + width + '_' + filename, function(err) {
-                                        if (err) console.log('Error writing file: ' + err);
+                                      this.resize(width, height).write(dest + 'w' + width + '_' + filename, function (err) {
+                                        if (err) {
+                                          console.log('Error writing file: ' + err);
+                                        }
                                       });
                                     }.bind(this));
                                   }
@@ -82,8 +84,11 @@
                           downloadPhoto('http://coolcats.com/cat.gif', handlePhoto);
 
                           function handlePhoto (error, photo) {
-                            if (error) console.error('Ошибка загрузки!', error);
-                            else console.log('Загрузка завершена', photo);
+                            if (error) {
+                              console.error('Ошибка загрузки!', error);
+                            } else {
+                              console.log('Загрузка завершена', photo);
+                            }
                           }
 
                           console.log('Загрузка начата');
@@ -116,10 +121,12 @@
                               method: 'POST'
                             }, function (err, response, body) {
                               var statusMessage = document.querySelector('.status');
-                              if (err) return statusMessage.value = err;
+                              if (err) {
+                                return statusMessage.value = err;
+                              }
                               statusMessage.value = body;
                             });
-                          }
+                          };
 
                       Этот код имеет две анонимные функции. Давайте дадим им имена.
 
@@ -132,10 +139,12 @@
                               method: 'POST'
                             }, function postResponse (err, response, body) {
                               var statusMessage = document.querySelector('.status');
-                              if (err) return statusMessage.value = err;
+                              if (err) {
+                                return statusMessage.value = err;
+                              }
                               statusMessage.value = body;
                             });
-                          }
+                          };
 
                       Как видите, давать имена функциям легко, и это имеет неоспоримые преимущества:
 
@@ -158,7 +167,9 @@
 
                           function postResponse (err, response, body) {
                             var statusMessage = document.querySelector('.status');
-                            if (err) return statusMessage.value = err;
+                            if (err) {
+                              return statusMessage.value = err;
+                            }
                             statusMessage.value = body;
                           }
 
@@ -185,7 +196,9 @@
 
                           function postResponse (err, response, body) {
                             var statusMessage = document.querySelector('.status');
-                            if (err) return statusMessage.value = err;
+                            if (err) {
+                              return statusMessage.value = err;
+                            }
                             statusMessage.value = body;
                           }
 
@@ -214,7 +227,9 @@
                            fs.readFile('/Не/сущес/твует', handleFile);
 
                            function handleFile (error, file) {
-                             if (error) return console.error('Ой, случилась ошибка', error);
+                             if (error) {
+                               return console.error('Ой, случилась ошибка', error);
+                             }
                              // в противном случае, продолжай и используй `file` в своём коде
                            }
 
